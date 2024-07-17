@@ -6,9 +6,15 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"vfs/repo"
+	"vfs/service"
 )
 
 func main() {
+	userRepo := repo.NewMemoUserRepo()
+	userService := service.NewUserManageService(userRepo)
+
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Virtual File System REPL")
 	for {
@@ -29,6 +35,11 @@ func main() {
 			if len(args) != 1 {
 				fmt.Println("Usage: register [username]")
 				continue
+			}
+			if err := userService.Register(args[0]); err != nil {
+				fmt.Println(err)
+			} else {
+				fmt.Printf("Add %s successfully.\n", args[0])
 			}
 		case "create-folder":
 			if len(args) < 2 || len(args) > 3 {
