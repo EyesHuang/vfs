@@ -51,9 +51,9 @@ type UserRepository interface {
 }
 
 type FolderService interface {
-	AddFolder(req *GetFoldersRequest) error
+	AddFolder(folder *Folder) error
 	DeleteFolder(name string) error
-	GetFolders(name string) (*Folder, error)
+	GetFolders(req *GetFoldersRequest) (*Folder, error)
 	UpdateFolder(oldName, newName string) error
 }
 

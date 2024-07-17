@@ -35,7 +35,7 @@ func (fms *FolderManageService) DeleteFolder(name string) error {
 	return nil
 }
 
-func (fms *FolderManageService) GetFolders(name string) (*vfs.Folder, error) {
+func (fms *FolderManageService) GetFolders(req *vfs.GetFoldersRequest) (*vfs.Folder, error) {
 	return nil, nil
 }
 
