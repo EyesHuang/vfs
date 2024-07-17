@@ -7,12 +7,8 @@ import (
 )
 
 type User struct {
-	ID       uuid.UUID
-	Username string
-}
-
-type UserManager struct {
-	Users map[string]*User
+	ID   uuid.UUID
+	Name string
 }
 
 type Folder struct {
@@ -30,4 +26,12 @@ type File struct {
 	Description string
 	CreatedAt   time.Time
 	FolderID    uuid.UUID
+}
+
+type UserService interface {
+	Register(name string) error
+}
+
+type UserRepository interface {
+	AddUser(name string) error
 }
