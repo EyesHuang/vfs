@@ -5,7 +5,10 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
+
+	"vfs"
 
 	"vfs/repo"
 	"vfs/service"
@@ -14,6 +17,9 @@ import (
 func main() {
 	userRepo := repo.NewMemoUserRepo()
 	userService := service.NewUserManageService(userRepo)
+
+	folderRepo := repo.NewMemoFolderRepo()
+	folderService := service.NewFolderManageService(folderRepo, userRepo)
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Virtual File System REPL")
@@ -45,6 +51,32 @@ func main() {
 			if len(args) < 2 || len(args) > 3 {
 				fmt.Println("Usage: create-folder [username] [foldername] [description]?")
 				continue
+			}
+
+			if !isValidFolderFileName(args[1]) {
+				fmt.Printf("The %s contain invalid chars.\n", args[1])
+				continue
+			}
+
+			var folder *vfs.Folder
+
+			if len(args) == 2 {
+				folder = &vfs.Folder{
+					Name:     args[1],
+					UserName: args[0],
+				}
+			} else {
+				folder = &vfs.Folder{
+					Name:        args[1],
+					Description: args[2],
+					UserName:    args[0],
+				}
+			}
+
+			if err := folderService.AddFolder(folder); err != nil {
+				fmt.Println(err)
+			} else {
+				fmt.Printf("Create %s successfully.\n", args[1])
 			}
 		case "delete-folder":
 			if len(args) != 2 {
@@ -80,4 +112,12 @@ func main() {
 			fmt.Println("Unrecognized command")
 		}
 	}
+}
+
+// isValidFolderFileName checks if the given folder name is valid
+func isValidFolderFileName(name string) bool {
+	// Define the valid characters for a folder name using regex
+	// Here we allow letters (a-z, A-Z), digits (0-9), underscores (_), hyphens (-), and spaces
+	validFolderName := regexp.MustCompile(`^[a-zA-Z0-9_\- ]+$`)
+	return validFolderName.MatchString(name)
 }

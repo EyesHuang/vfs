@@ -20,7 +20,7 @@ func NewMemoUserRepo() *MemoryUserRepo {
 }
 
 func (mur *MemoryUserRepo) AddUser(name string) error {
-	if _, exists := mur.Users[name]; exists {
+	if mur.GetUser(name) != nil {
 		errMsg := fmt.Sprintf("The %s has already existed.", name)
 		return errors.New(errMsg)
 	}
@@ -28,6 +28,13 @@ func (mur *MemoryUserRepo) AddUser(name string) error {
 	mur.Users[name] = &vfs.User{
 		ID:   id,
 		Name: name,
+	}
+	return nil
+}
+
+func (mur *MemoryUserRepo) GetUser(name string) *vfs.User {
+	if user, exists := mur.Users[name]; exists {
+		return user
 	}
 	return nil
 }
