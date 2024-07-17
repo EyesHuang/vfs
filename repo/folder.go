@@ -8,36 +8,28 @@ import (
 )
 
 type MemoryFolderRepo struct {
-	Folders map[keySet]*vfs.Folder
-}
-
-type keySet struct {
-	userName   string
-	folderName string
+	Folders map[vfs.KeySet]*vfs.Folder
 }
 
 func NewMemoFolderRepo() *MemoryFolderRepo {
 	return &MemoryFolderRepo{
-		make(map[keySet]*vfs.Folder),
+		make(map[vfs.KeySet]*vfs.Folder),
 	}
 }
 
-func (mfr *MemoryFolderRepo) GetFolder(name string) (*vfs.Folder, error) {
-	key := keySet{
-		folderName: name,
-	}
+func (mfr *MemoryFolderRepo) GetFolder(key vfs.KeySet) *vfs.Folder {
 	if folder, exists := mfr.Folders[key]; exists {
-		return folder, nil
+		return folder
 	}
-	return nil, nil
+	return nil
 }
 
 func (mfr *MemoryFolderRepo) AddFolder(folder *vfs.Folder) error {
-	key := keySet{
-		userName:   folder.UserName,
-		folderName: folder.Name,
+	key := vfs.KeySet{
+		UserName:   folder.UserName,
+		FolderName: folder.Name,
 	}
-	if _, exists := mfr.Folders[key]; exists {
+	if mfr.GetFolder(key) != nil {
 		errMsg := fmt.Sprintf("The %s has already existed.", folder.Name)
 		return errors.New(errMsg)
 	}
@@ -46,9 +38,9 @@ func (mfr *MemoryFolderRepo) AddFolder(folder *vfs.Folder) error {
 }
 
 func (mfr *MemoryFolderRepo) UpdateFolder(folder *vfs.Folder) error {
-	key := keySet{
-		userName:   folder.UserName,
-		folderName: folder.Name,
+	key := vfs.KeySet{
+		UserName:   folder.UserName,
+		FolderName: folder.Name,
 	}
 	if _, exists := mfr.Folders[key]; !exists {
 		errMsg := fmt.Sprintf("The %s doesn't exist.", folder.Name)
@@ -58,12 +50,9 @@ func (mfr *MemoryFolderRepo) UpdateFolder(folder *vfs.Folder) error {
 	return nil
 }
 
-func (mfr *MemoryFolderRepo) DeleteFolder(name string) error {
-	key := keySet{
-		folderName: name,
-	}
-	if _, exists := mfr.Folders[key]; !exists {
-		errMsg := fmt.Sprintf("The %s doesn't exist.", name)
+func (mfr *MemoryFolderRepo) DeleteFolder(key vfs.KeySet) error {
+	if mfr.GetFolder(key) != nil {
+		errMsg := fmt.Sprintf("The %s doesn't exist.", key.FolderName)
 		return errors.New(errMsg)
 	}
 	delete(mfr.Folders, key)

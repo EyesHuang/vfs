@@ -31,7 +31,17 @@ func (fms *FolderManageService) AddFolder(folder *vfs.Folder) error {
 	return nil
 }
 
-func (fms *FolderManageService) DeleteFolder(name string) error {
+func (fms *FolderManageService) DeleteFolder(key vfs.KeySet) error {
+	user := fms.userRepo.GetUser(key.UserName)
+	if user == nil {
+		errMsg := fmt.Sprintf("The %s doesn't exist.", key.UserName)
+		return errors.New(errMsg)
+	}
+
+	if err := fms.folderRepo.DeleteFolder(key); err != nil {
+		return err
+	}
+
 	return nil
 }
 

@@ -38,6 +38,22 @@ func (hm *HandlerManager) HandleDeleteFolder(args []string) {
 		fmt.Println("Usage: delete-folder [username] [foldername]")
 		return
 	}
+
+	if !isValidFolderFileName(args[1]) {
+		fmt.Printf("The %s contain invalid chars.\n", args[1])
+		return
+	}
+
+	key := vfs.KeySet{
+		UserName:   args[0],
+		FolderName: args[1],
+	}
+
+	if err := hm.folderService.DeleteFolder(key); err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Printf("Delete %s successfully.\n", args[1])
+	}
 }
 
 func (hm *HandlerManager) HandleListFolders(args []string) {

@@ -28,6 +28,11 @@ type File struct {
 	FolderID    uuid.UUID
 }
 
+type KeySet struct {
+	UserName   string
+	FolderName string
+}
+
 type GetFoldersRequest struct {
 	UserName string
 	SortBy   string
@@ -52,14 +57,14 @@ type UserRepository interface {
 
 type FolderService interface {
 	AddFolder(folder *Folder) error
-	DeleteFolder(name string) error
+	DeleteFolder(key KeySet) error
 	GetFolders(req *GetFoldersRequest) (*Folder, error)
 	UpdateFolder(oldName, newName string) error
 }
 
 type FolderRepository interface {
-	GetFolder(name string) (*Folder, error)
+	GetFolder(key KeySet) *Folder
 	AddFolder(folder *Folder) error
 	UpdateFolder(folder *Folder) error
-	DeleteFolder(name string) error
+	DeleteFolder(key KeySet) error
 }
