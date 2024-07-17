@@ -8,46 +8,65 @@ import (
 )
 
 type MemoryFolderRepo struct {
-	Folders map[string]*vfs.Folder
+	Folders map[keySet]*vfs.Folder
+}
+
+type keySet struct {
+	userName   string
+	folderName string
 }
 
 func NewMemoFolderRepo() *MemoryFolderRepo {
 	return &MemoryFolderRepo{
-		make(map[string]*vfs.Folder),
+		make(map[keySet]*vfs.Folder),
 	}
 }
 
 func (mfr *MemoryFolderRepo) GetFolder(name string) (*vfs.Folder, error) {
-	if folder, exists := mfr.Folders[name]; exists {
+	key := keySet{
+		folderName: name,
+	}
+	if folder, exists := mfr.Folders[key]; exists {
 		return folder, nil
 	}
 	return nil, nil
 }
 
 func (mfr *MemoryFolderRepo) AddFolder(folder *vfs.Folder) error {
-	if _, exists := mfr.Folders[folder.Name]; exists {
+	key := keySet{
+		userName:   folder.UserName,
+		folderName: folder.Name,
+	}
+	if _, exists := mfr.Folders[key]; exists {
 		errMsg := fmt.Sprintf("The %s has already existed.", folder.Name)
 		return errors.New(errMsg)
 	}
-	mfr.Folders[folder.Name] = folder
+	mfr.Folders[key] = folder
 	return nil
 }
 
 func (mfr *MemoryFolderRepo) UpdateFolder(folder *vfs.Folder) error {
-	if _, exists := mfr.Folders[folder.Name]; !exists {
+	key := keySet{
+		userName:   folder.UserName,
+		folderName: folder.Name,
+	}
+	if _, exists := mfr.Folders[key]; !exists {
 		errMsg := fmt.Sprintf("The %s doesn't exist.", folder.Name)
 		return errors.New(errMsg)
 	}
-	mfr.Folders[folder.Name] = folder
+	mfr.Folders[key] = folder
 	return nil
 }
 
 func (mfr *MemoryFolderRepo) DeleteFolder(name string) error {
-	if _, exists := mfr.Folders[name]; !exists {
+	key := keySet{
+		folderName: name,
+	}
+	if _, exists := mfr.Folders[key]; !exists {
 		errMsg := fmt.Sprintf("The %s doesn't exist.", name)
 		return errors.New(errMsg)
 	}
-	delete(mfr.Folders, name)
+	delete(mfr.Folders, key)
 	return nil
 }
 
