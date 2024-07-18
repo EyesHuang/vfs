@@ -1,12 +1,8 @@
-// cmd/main.go
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"os"
-	"strings"
-
+	"vfs/handler"
+	"vfs/repl"
 	"vfs/repo"
 	"vfs/service"
 )
@@ -15,69 +11,10 @@ func main() {
 	userRepo := repo.NewMemoUserRepo()
 	userService := service.NewUserManageService(userRepo)
 
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("Virtual File System REPL")
-	for {
-		fmt.Print("# ")
-		input, _ := reader.ReadString('\n')
-		input = strings.TrimSpace(input)
-		args := strings.Split(input, " ")
+	folderRepo := repo.NewMemoFolderRepo()
+	folderService := service.NewFolderManageService(folderRepo, userRepo)
 
-		if len(args) == 0 {
-			continue
-		}
+	handler := handler.NewHandlerManager(userService, folderService)
 
-		command := args[0]
-		args = args[1:]
-
-		switch command {
-		case "register":
-			if len(args) != 1 {
-				fmt.Println("Usage: register [username]")
-				continue
-			}
-			if err := userService.Register(args[0]); err != nil {
-				fmt.Println(err)
-			} else {
-				fmt.Printf("Add %s successfully.\n", args[0])
-			}
-		case "create-folder":
-			if len(args) < 2 || len(args) > 3 {
-				fmt.Println("Usage: create-folder [username] [foldername] [description]?")
-				continue
-			}
-		case "delete-folder":
-			if len(args) != 2 {
-				fmt.Println("Usage: delete-folder [username] [foldername]")
-				continue
-			}
-		case "list-folders":
-			if len(args) < 1 || len(args) > 3 {
-				fmt.Println("Usage: list-folders [username] [--sort-name|--sort-created] [asc|desc]")
-				continue
-			}
-		case "rename-folder":
-			if len(args) != 3 {
-				fmt.Println("Usage: rename-folder [username] [foldername] [new-folder-name]")
-				continue
-			}
-		case "create-file":
-			if len(args) < 3 || len(args) > 4 {
-				fmt.Println("Usage: create-file [username] [foldername] [filename] [description]?")
-				continue
-			}
-		case "delete-file":
-			if len(args) != 3 {
-				fmt.Println("Usage: delete-file [username] [foldername] [filename]")
-				continue
-			}
-		case "list-files":
-			if len(args) != 4 {
-				fmt.Println("Usage: list-files [username] [foldername] [--sort-name|--sort-created] [asc|desc]")
-				continue
-			}
-		default:
-			fmt.Println("Unrecognized command")
-		}
-	}
+	repl.StartREPL(handler)
 }

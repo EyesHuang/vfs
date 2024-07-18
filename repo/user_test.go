@@ -30,3 +30,24 @@ func TestAddUser_ExistingUser(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Equal(t, "The user1 has already existed.", err.Error())
 }
+
+func TestGetUser_Success(t *testing.T) {
+	repo := NewMemoUserRepo()
+
+	// Add a user first
+	err := repo.AddUser("user1")
+	assert.Nil(t, err)
+
+	// Retrieve the user
+	user := repo.GetUser("user1")
+	assert.NotNil(t, user)
+	assert.Equal(t, "user1", user.Name)
+}
+
+func TestGetUser_NotFound(t *testing.T) {
+	repo := NewMemoUserRepo()
+
+	// Try to retrieve a non-existing user
+	user := repo.GetUser("nonExistentUser")
+	assert.Nil(t, user)
+}
