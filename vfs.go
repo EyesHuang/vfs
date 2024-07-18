@@ -39,6 +39,12 @@ type GetFoldersRequest struct {
 	OrderBy  OrderType
 }
 
+type UpdateFolderRequest struct {
+	OldName  string
+	NewName  string
+	UserName string
+}
+
 type SortType string
 
 type OrderType string
@@ -63,13 +69,13 @@ type FolderService interface {
 	AddFolder(folder *Folder) error
 	DeleteFolder(key KeySet) error
 	GetFolders(req *GetFoldersRequest) ([]*Folder, error)
-	UpdateFolder(oldName, newName string) error
+	UpdateFolder(req *UpdateFolderRequest) error
 }
 
 type FolderRepository interface {
 	GetFolder(key KeySet) *Folder
 	GetFolders(req *GetFoldersRequest) []*Folder
 	AddFolder(folder *Folder) error
-	UpdateFolder(folder *Folder) error
+	UpdateFolder(req *UpdateFolderRequest) error
 	DeleteFolder(key KeySet) error
 }

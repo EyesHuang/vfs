@@ -105,6 +105,23 @@ func (hm *HandlerManager) HandleRenameFolder(args []string) {
 		fmt.Println("Usage: rename-folder [username] [foldername] [new-folder-name]")
 		return
 	}
+
+	if !isValidFolderFileName(args[1]) || !isValidFolderFileName(args[2]) {
+		fmt.Printf("Folder names contain invalid chars.\n")
+		return
+	}
+
+	req := &vfs.UpdateFolderRequest{
+		OldName:  args[1],
+		NewName:  args[2],
+		UserName: args[0],
+	}
+
+	if err := hm.folderService.UpdateFolder(req); err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Printf("Rename %s to %s successfully.\n", args[1], args[2])
+	}
 }
 
 // isValidFolderFileName checks if the given folder/file name is valid

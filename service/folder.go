@@ -57,6 +57,16 @@ func (fms *FolderManageService) GetFolders(req *vfs.GetFoldersRequest) ([]*vfs.F
 	return fms.folderRepo.GetFolders(req), nil
 }
 
-func (fms *FolderManageService) UpdateFolder(oldName, newName string) error {
+func (fms *FolderManageService) UpdateFolder(req *vfs.UpdateFolderRequest) error {
+	user := fms.userRepo.GetUser(req.UserName)
+	if user == nil {
+		errMsg := fmt.Sprintf("The %s doesn't exist.", req.UserName)
+		return errors.New(errMsg)
+	}
+
+	if err := fms.folderRepo.UpdateFolder(req); err != nil {
+		return err
+	}
+
 	return nil
 }

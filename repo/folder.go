@@ -38,16 +38,32 @@ func (mfr *MemoryFolderRepo) AddFolder(folder *vfs.Folder) error {
 	return nil
 }
 
-func (mfr *MemoryFolderRepo) UpdateFolder(folder *vfs.Folder) error {
-	key := vfs.KeySet{
-		UserName:   folder.UserName,
-		FolderName: folder.Name,
+func (mfr *MemoryFolderRepo) UpdateFolder(req *vfs.UpdateFolderRequest) error {
+	oldKey := vfs.KeySet{
+		UserName:   req.UserName,
+		FolderName: req.OldName,
 	}
-	if _, exists := mfr.Folders[key]; !exists {
-		errMsg := fmt.Sprintf("The %s doesn't exist.", folder.Name)
+	newKey := vfs.KeySet{
+		UserName:   req.UserName,
+		FolderName: req.NewName,
+	}
+
+	if mfr.GetFolder(oldKey) == nil {
+		errMsg := fmt.Sprintf("The folder %s doesn't exist.", req.OldName)
 		return errors.New(errMsg)
 	}
-	mfr.Folders[key] = folder
+
+	if mfr.GetFolder(newKey) != nil {
+		errMsg := fmt.Sprintf("The folder %s already exists.", req.NewName)
+		return errors.New(errMsg)
+	}
+
+	// Perform the renaming
+	folder := mfr.Folders[oldKey]
+	delete(mfr.Folders, oldKey)
+	folder.Name = req.NewName
+	mfr.Folders[newKey] = folder
+
 	return nil
 }
 
