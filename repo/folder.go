@@ -68,7 +68,7 @@ func (mfr *MemoryFolderRepo) UpdateFolder(req *vfs.UpdateFolderRequest) error {
 }
 
 func (mfr *MemoryFolderRepo) DeleteFolder(key vfs.KeySet) error {
-	if mfr.GetFolder(key) != nil {
+	if mfr.GetFolder(key) == nil {
 		errMsg := fmt.Sprintf("The %s doesn't exist.", key.FolderName)
 		return errors.New(errMsg)
 	}
