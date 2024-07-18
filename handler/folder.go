@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
 	"vfs"
 )
@@ -61,6 +62,35 @@ func (hm *HandlerManager) HandleListFolders(args []string) {
 		fmt.Println("Usage: list-folders [username] [--sort-name|--sort-created] [asc|desc]")
 		return
 	}
+
+	req := &vfs.GetFoldersRequest{
+		UserName: args[0],
+	}
+
+	if len(args) == 3 {
+		sortBy, orderBy, err := parseSortAndOrder(args[1], args[2])
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		req.SortBy = sortBy
+		req.OrderBy = orderBy
+	}
+
+	folders, err := hm.folderService.GetFolders(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if len(folders) == 0 {
+		fmt.Printf("Warning: The %s doesn't have any folders.\n", req.UserName)
+		return
+	}
+
+	for _, folder := range folders {
+		fmt.Printf("%s\t%s\t%s\t%s\n", folder.Name, folder.Description, folder.CreatedAt.Format("2006-01-02 15:04:05"), folder.UserName)
+	}
 }
 
 func (hm *HandlerManager) HandleRenameFolder(args []string) {
@@ -70,10 +100,40 @@ func (hm *HandlerManager) HandleRenameFolder(args []string) {
 	}
 }
 
-// isValidFolderFileName checks if the given folder name is valid
+// isValidFolderFileName checks if the given folder/file name is valid
 func isValidFolderFileName(name string) bool {
-	// Define the valid characters for a folder name using regex
-	// Here we allow letters (a-z, A-Z), digits (0-9), underscores (_), hyphens (-), and spaces
-	validFolderName := regexp.MustCompile(`^[a-zA-Z0-9_\- ]+$`)
-	return validFolderName.MatchString(name)
+	// Check if the first character is a whitespace
+	if strings.HasPrefix(name, " ") {
+		return false
+	}
+
+	// Define the invalid characters for a folder name using regex
+	// Invalid characters are \ / : * ? " < > |
+	invalidFolderName := regexp.MustCompile(`[\\/:*?"<>|]`)
+	return !invalidFolderName.MatchString(name)
+}
+
+func parseSortAndOrder(sortType, orderType string) (vfs.SortType, vfs.OrderType, error) {
+	var sortBy vfs.SortType
+	var orderBy vfs.OrderType
+
+	switch sortType {
+	case "--sort-name":
+		sortBy = vfs.FolderName
+	case "--sort-created":
+		sortBy = vfs.Created
+	default:
+		return sortBy, orderBy, fmt.Errorf("invalid sort type. use '--sort-name' or '--sort-created'")
+	}
+
+	switch orderType {
+	case "asc":
+		orderBy = vfs.Asc
+	case "desc":
+		orderBy = vfs.Desc
+	default:
+		return sortBy, orderBy, fmt.Errorf("invalid order type. use 'asc' or 'desc'")
+	}
+
+	return sortBy, orderBy, nil
 }

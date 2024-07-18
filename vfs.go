@@ -35,15 +35,19 @@ type KeySet struct {
 
 type GetFoldersRequest struct {
 	UserName string
-	SortBy   string
+	SortBy   SortType
 	OrderBy  OrderType
 }
+
+type SortType string
 
 type OrderType string
 
 const (
-	Asc  OrderType = "asc"
-	Desc OrderType = "desc"
+	Asc        OrderType = "asc"
+	Desc       OrderType = "desc"
+	FolderName SortType  = "--sort-name"
+	Created    SortType  = "--sort-created"
 )
 
 type UserService interface {
@@ -58,12 +62,13 @@ type UserRepository interface {
 type FolderService interface {
 	AddFolder(folder *Folder) error
 	DeleteFolder(key KeySet) error
-	GetFolders(req *GetFoldersRequest) (*Folder, error)
+	GetFolders(req *GetFoldersRequest) ([]*Folder, error)
 	UpdateFolder(oldName, newName string) error
 }
 
 type FolderRepository interface {
 	GetFolder(key KeySet) *Folder
+	GetFolders(req *GetFoldersRequest) []*Folder
 	AddFolder(folder *Folder) error
 	UpdateFolder(folder *Folder) error
 	DeleteFolder(key KeySet) error

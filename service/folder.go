@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"vfs"
 )
@@ -24,6 +25,7 @@ func (fms *FolderManageService) AddFolder(folder *vfs.Folder) error {
 	}
 
 	folder.UserID = user.ID
+	folder.CreatedAt = time.Now()
 
 	if err := fms.folderRepo.AddFolder(folder); err != nil {
 		return err
@@ -45,8 +47,14 @@ func (fms *FolderManageService) DeleteFolder(key vfs.KeySet) error {
 	return nil
 }
 
-func (fms *FolderManageService) GetFolders(req *vfs.GetFoldersRequest) (*vfs.Folder, error) {
-	return nil, nil
+func (fms *FolderManageService) GetFolders(req *vfs.GetFoldersRequest) ([]*vfs.Folder, error) {
+	user := fms.userRepo.GetUser(req.UserName)
+	if user == nil {
+		errMsg := fmt.Sprintf("The %s doesn't exist.", req.UserName)
+		return nil, errors.New(errMsg)
+	}
+
+	return fms.folderRepo.GetFolders(req), nil
 }
 
 func (fms *FolderManageService) UpdateFolder(oldName, newName string) error {

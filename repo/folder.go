@@ -3,6 +3,7 @@ package repo
 import (
 	"errors"
 	"fmt"
+	"sort"
 
 	"vfs"
 )
@@ -59,6 +60,41 @@ func (mfr *MemoryFolderRepo) DeleteFolder(key vfs.KeySet) error {
 	return nil
 }
 
-func (mfr *MemoryFolderRepo) GetFolders(req *vfs.GetFoldersRequest) ([]*vfs.Folder, error) {
-	return nil, nil
+func (mfr *MemoryFolderRepo) GetFolders(req *vfs.GetFoldersRequest) []*vfs.Folder {
+	var folders []*vfs.Folder
+	for key, folder := range mfr.Folders {
+		if key.UserName == req.UserName {
+			folders = append(folders, folder)
+		}
+	}
+
+	// Sorting
+	switch req.SortBy {
+	case vfs.FolderName:
+		if req.OrderBy == vfs.Asc {
+			sort.Slice(folders, func(i, j int) bool {
+				return folders[i].Name < folders[j].Name
+			})
+		} else {
+			sort.Slice(folders, func(i, j int) bool {
+				return folders[i].Name > folders[j].Name
+			})
+		}
+	case vfs.Created:
+		if req.OrderBy == vfs.Asc {
+			sort.Slice(folders, func(i, j int) bool {
+				return folders[i].CreatedAt.Before(folders[j].CreatedAt)
+			})
+		} else {
+			sort.Slice(folders, func(i, j int) bool {
+				return folders[i].CreatedAt.After(folders[j].CreatedAt)
+			})
+		}
+	default:
+		sort.Slice(folders, func(i, j int) bool {
+			return folders[i].Name < folders[j].Name
+		})
+	}
+
+	return folders
 }
