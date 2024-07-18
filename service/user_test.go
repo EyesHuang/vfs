@@ -10,7 +10,7 @@ import (
 )
 
 func TestRegister_Success(t *testing.T) {
-	mockRepo := new(mock.MockUserService)
+	mockRepo := new(mock.MockUserRepo)
 	service := NewUserManageService(mockRepo)
 	mockRepo.On("AddUser", "user1").Return(nil)
 
@@ -19,7 +19,7 @@ func TestRegister_Success(t *testing.T) {
 }
 
 func TestRegister_ExistingUser(t *testing.T) {
-	mockRepo := new(mock.MockUserService)
+	mockRepo := new(mock.MockUserRepo)
 	service := NewUserManageService(mockRepo)
 	mockRepo.On("AddUser", "user1").Return(nil).Once()
 

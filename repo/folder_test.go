@@ -204,3 +204,38 @@ func TestGetFolders_SortyByCreatedTime(t *testing.T) {
 	assert.Equal(t, "folder1", folders[0].Name)
 	assert.Equal(t, "folder2", folders[1].Name)
 }
+
+func TestGetFolders_SortyByCreatedTimeWithDescOrder(t *testing.T) {
+	repo := NewMemoFolderRepo()
+
+	now := time.Now()
+	folder1 := &vfs.Folder{
+		UserName:  "user1",
+		Name:      "folder1",
+		CreatedAt: now.Add(-2 * time.Hour),
+	}
+	folder2 := &vfs.Folder{
+		UserName:  "user1",
+		Name:      "folder2",
+		CreatedAt: now.Add(-1 * time.Hour),
+	}
+	folder3 := &vfs.Folder{
+		UserName:  "user2",
+		Name:      "folder3",
+		CreatedAt: now,
+	}
+	_ = repo.AddFolder(folder1)
+	_ = repo.AddFolder(folder2)
+	_ = repo.AddFolder(folder3)
+
+	req := &vfs.GetFoldersRequest{
+		UserName: "user1",
+		SortBy:   vfs.Created,
+		OrderBy:  vfs.Desc,
+	}
+
+	folders := repo.GetFolders(req)
+	assert.Len(t, folders, 2)
+	assert.Equal(t, "folder2", folders[0].Name)
+	assert.Equal(t, "folder1", folders[1].Name)
+}
