@@ -68,11 +68,18 @@ func (hm *HandlerManager) HandleListFolders(args []string) {
 	}
 
 	if len(args) == 3 {
-		sortBy, orderBy, err := parseSortAndOrder(args[1], args[2])
+		sortBy, err := parseSortType(args[1])
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
+
+		orderBy, err := parseOrderType(args[2])
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
 		req.SortBy = sortBy
 		req.OrderBy = orderBy
 	}
@@ -113,9 +120,8 @@ func isValidFolderFileName(name string) bool {
 	return !invalidFolderName.MatchString(name)
 }
 
-func parseSortAndOrder(sortType, orderType string) (vfs.SortType, vfs.OrderType, error) {
+func parseSortType(sortType string) (vfs.SortType, error) {
 	var sortBy vfs.SortType
-	var orderBy vfs.OrderType
 
 	switch sortType {
 	case "--sort-name":
@@ -123,8 +129,14 @@ func parseSortAndOrder(sortType, orderType string) (vfs.SortType, vfs.OrderType,
 	case "--sort-created":
 		sortBy = vfs.Created
 	default:
-		return sortBy, orderBy, fmt.Errorf("invalid sort type. use '--sort-name' or '--sort-created'")
+		return sortBy, fmt.Errorf("invalid sort type. use '--sort-name' or '--sort-created'")
 	}
+
+	return sortBy, nil
+}
+
+func parseOrderType(orderType string) (vfs.OrderType, error) {
+	var orderBy vfs.OrderType
 
 	switch orderType {
 	case "asc":
@@ -132,8 +144,8 @@ func parseSortAndOrder(sortType, orderType string) (vfs.SortType, vfs.OrderType,
 	case "desc":
 		orderBy = vfs.Desc
 	default:
-		return sortBy, orderBy, fmt.Errorf("invalid order type. use 'asc' or 'desc'")
+		return orderBy, fmt.Errorf("invalid order type. use 'asc' or 'desc'")
 	}
 
-	return sortBy, orderBy, nil
+	return orderBy, nil
 }
