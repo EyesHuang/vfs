@@ -16,6 +16,7 @@ func TestRegister_Success(t *testing.T) {
 
 	err := service.Register("user1")
 	assert.Nil(t, err)
+	mockRepo.AssertExpectations(t)
 }
 
 func TestRegister_ExistingUser(t *testing.T) {
@@ -33,4 +34,5 @@ func TestRegister_ExistingUser(t *testing.T) {
 	err = service.Register("user1")
 	assert.NotNil(t, err)
 	assert.Equal(t, "The user1 has already existed.", err.Error())
+	mockRepo.AssertExpectations(t)
 }
