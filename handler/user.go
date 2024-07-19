@@ -23,6 +23,12 @@ func (hm *HandlerManager) HandleRegister(args []string) {
 		fmt.Println("Usage: register [username]")
 		return
 	}
+
+	if err := validateName(args[0]); err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	if err := hm.userService.Register(args[0]); err != nil {
 		fmt.Println(err)
 	} else {

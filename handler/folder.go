@@ -2,8 +2,6 @@ package handler
 
 import (
 	"fmt"
-	"regexp"
-	"strings"
 
 	"vfs"
 )
@@ -17,6 +15,13 @@ func (hm *HandlerManager) HandleCreateFolder(args []string) {
 	if !isValidFolderFileName(args[1]) {
 		fmt.Printf("The %s contains invalid chars.\n", args[1])
 		return
+	}
+
+	for _, name := range args[:2] {
+		if err := validateName(name); err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
 
 	folder := &vfs.Folder{
@@ -45,6 +50,13 @@ func (hm *HandlerManager) HandleDeleteFolder(args []string) {
 		return
 	}
 
+	for _, name := range args {
+		if err := validateName(name); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
+
 	key := vfs.FolderKeySet{
 		UserName:   args[0],
 		FolderName: args[1],
@@ -60,6 +72,11 @@ func (hm *HandlerManager) HandleDeleteFolder(args []string) {
 func (hm *HandlerManager) HandleListFolders(args []string) {
 	if len(args) < 1 || len(args) > 3 {
 		fmt.Println("Usage: list-folders [username] [--sort-name|--sort-created] [asc|desc]")
+		return
+	}
+
+	if err := validateName(args[0]); err != nil {
+		fmt.Println(err)
 		return
 	}
 
@@ -106,9 +123,18 @@ func (hm *HandlerManager) HandleRenameFolder(args []string) {
 		return
 	}
 
-	if !isValidFolderFileName(args[1]) || !isValidFolderFileName(args[2]) {
-		fmt.Printf("Folder names contains invalid chars.\n")
-		return
+	for _, name := range args[1:] {
+		if !isValidFolderFileName(name) {
+			fmt.Printf("Folder name %s contains invalid chars.\n", name)
+			return
+		}
+	}
+
+	for _, name := range args {
+		if err := validateName(name); err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
 
 	req := &vfs.UpdateFolderRequest{
@@ -122,19 +148,6 @@ func (hm *HandlerManager) HandleRenameFolder(args []string) {
 	} else {
 		fmt.Printf("Rename %s to %s successfully.\n", args[1], args[2])
 	}
-}
-
-// isValidFolderFileName checks if the given folder/file name is valid
-func isValidFolderFileName(name string) bool {
-	// Check if the first character is a whitespace
-	if strings.HasPrefix(name, " ") {
-		return false
-	}
-
-	// Define the invalid characters for a folder name using regex
-	// Invalid characters are \ / : * ? " < > |
-	invalidFolderName := regexp.MustCompile(`[\\/:*?"<>|]`)
-	return !invalidFolderName.MatchString(name)
 }
 
 func parseSortType(sortType string) (vfs.SortType, error) {
