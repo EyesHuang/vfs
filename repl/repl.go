@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	"vfs/handler"
@@ -16,7 +17,7 @@ func StartREPL(handler *handler.HandlerManager) {
 		fmt.Print("# ")
 		input, _ := reader.ReadString('\n')
 		input = strings.TrimSpace(input)
-		args := strings.Split(input, " ")
+		args := parseInput(input)
 
 		if len(args) == 0 {
 			continue
@@ -50,4 +51,20 @@ func dispatchCommand(command string, args []string, handler *handler.HandlerMana
 	default:
 		fmt.Println("Unrecognized command")
 	}
+}
+
+// parseInput handles inputs with double quotes and splits them into tokens
+func parseInput(input string) []string {
+	re := regexp.MustCompile(`"([^"]*)"|(\S+)`)
+	matches := re.FindAllStringSubmatch(input, -1)
+
+	var tokens []string
+	for _, match := range matches {
+		if match[1] != "" {
+			tokens = append(tokens, match[1])
+		} else {
+			tokens = append(tokens, match[2])
+		}
+	}
+	return tokens
 }

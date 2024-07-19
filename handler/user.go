@@ -40,7 +40,7 @@ func (hm *HandlerManager) HandleRegister(args []string) {
 
 const (
 	MaxNameLength  = 255
-	ValidNameRegex = `^[a-zA-Z0-9_\-]+$`
+	ValidNameRegex = `^[a-zA-Z0-9_\- ]+$`
 )
 
 func validateName(name string) error {
