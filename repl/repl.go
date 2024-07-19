@@ -11,9 +11,9 @@ import (
 
 func StartREPL(handler *handler.HandlerManager) {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("Virtual File System REPL")
+	_, _ = fmt.Fprintln(os.Stdout, "Virtual File System REPL")
 	for {
-		fmt.Print("# ")
+		_, _ = fmt.Fprintln(os.Stdout, "# ")
 		input, _ := reader.ReadString('\n')
 		input = strings.TrimSpace(input)
 		args := strings.Split(input, " ")
@@ -48,6 +48,6 @@ func dispatchCommand(command string, args []string, handler *handler.HandlerMana
 	case "list-files":
 		handler.HandleListFiles(args)
 	default:
-		fmt.Println("Unrecognized command")
+		_, _ = fmt.Fprintln(os.Stderr, "Unrecognized command")
 	}
 }
