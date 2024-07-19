@@ -2,8 +2,6 @@ package handler
 
 import (
 	"fmt"
-	"regexp"
-	"strings"
 
 	"vfs"
 )
@@ -150,19 +148,6 @@ func (hm *HandlerManager) HandleRenameFolder(args []string) {
 	} else {
 		fmt.Printf("Rename %s to %s successfully.\n", args[1], args[2])
 	}
-}
-
-// isValidFolderFileName checks if the given folder/file name is valid
-func isValidFolderFileName(name string) bool {
-	// Check if the first character is a whitespace
-	if strings.HasPrefix(name, " ") {
-		return false
-	}
-
-	// Define the invalid characters for a folder name using regex
-	// Invalid characters are \ / : * ? " < > |
-	invalidFolderName := regexp.MustCompile(`[\\/:*?"<>|]`)
-	return !invalidFolderName.MatchString(name)
 }
 
 func parseSortType(sortType string) (vfs.SortType, error) {
