@@ -15,7 +15,7 @@ func (hm *HandlerManager) HandleCreateFolder(args []string) {
 	}
 
 	if !isValidFolderFileName(args[1]) {
-		fmt.Printf("The %s contain invalid chars.\n", args[1])
+		fmt.Printf("The %s contains invalid chars.\n", args[1])
 		return
 	}
 
@@ -41,7 +41,7 @@ func (hm *HandlerManager) HandleDeleteFolder(args []string) {
 	}
 
 	if !isValidFolderFileName(args[1]) {
-		fmt.Printf("The %s contain invalid chars.\n", args[1])
+		fmt.Printf("The %s contains invalid chars.\n", args[1])
 		return
 	}
 
@@ -107,7 +107,7 @@ func (hm *HandlerManager) HandleRenameFolder(args []string) {
 	}
 
 	if !isValidFolderFileName(args[1]) || !isValidFolderFileName(args[2]) {
-		fmt.Printf("Folder names contain invalid chars.\n")
+		fmt.Printf("Folder names contains invalid chars.\n")
 		return
 	}
 

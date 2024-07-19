@@ -13,7 +13,7 @@ func (hm *HandlerManager) HandleCreateFile(args []string) {
 	}
 
 	if !isValidFolderFileName(args[1]) {
-		fmt.Printf("The %s contain invalid chars.\n", args[1])
+		fmt.Printf("The %s contains invalid chars.\n", args[1])
 		return
 	}
 
@@ -22,7 +22,7 @@ func (hm *HandlerManager) HandleCreateFile(args []string) {
 		UserName:   args[0],
 		FolderName: args[1],
 	}
-	if len(args) == 3 {
+	if len(args) == 4 {
 		file.Description = args[3]
 	}
 
@@ -40,12 +40,12 @@ func (hm *HandlerManager) HandleDeleteFile(args []string) {
 	}
 
 	if !isValidFolderFileName(args[1]) || !isValidFolderFileName(args[2]) {
-		fmt.Printf("The %s contain invalid chars.\n", args[1])
+		fmt.Printf("The %s contains invalid chars.\n", args[1])
 		return
 	}
 
 	if !isValidFolderFileName(args[2]) {
-		fmt.Printf("The %s contain invalid chars.\n", args[2])
+		fmt.Printf("The %s contains invalid chars.\n", args[2])
 		return
 	}
 
@@ -63,7 +63,7 @@ func (hm *HandlerManager) HandleDeleteFile(args []string) {
 }
 
 func (hm *HandlerManager) HandleListFiles(args []string) {
-	if len(args) != 4 {
+	if len(args) < 2 || len(args) > 4 {
 		fmt.Println("Usage: list-files [username] [foldername] [--sort-name|--sort-created] [asc|desc]")
 		return
 	}
