@@ -45,7 +45,7 @@ func (hm *HandlerManager) HandleDeleteFolder(args []string) {
 		return
 	}
 
-	key := vfs.KeySet{
+	key := vfs.FolderKeySet{
 		UserName:   args[0],
 		FolderName: args[1],
 	}

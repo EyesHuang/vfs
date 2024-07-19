@@ -28,7 +28,7 @@ type File struct {
 	FolderID    uuid.UUID
 }
 
-type KeySet struct {
+type FolderKeySet struct {
 	UserName   string
 	FolderName string
 }
@@ -43,6 +43,19 @@ type UpdateFolderRequest struct {
 	OldName  string
 	NewName  string
 	UserName string
+}
+
+type FileKeySet struct {
+	UserName   string
+	FolderName string
+	FileName   string
+}
+
+type GetFilesRequest struct {
+	UserName   string
+	FolderName string
+	SortBy     SortType
+	OrderBy    OrderType
 }
 
 type SortType string
@@ -67,15 +80,28 @@ type UserRepository interface {
 
 type FolderService interface {
 	AddFolder(folder *Folder) error
-	DeleteFolder(key KeySet) error
+	DeleteFolder(key FolderKeySet) error
 	GetFolders(req *GetFoldersRequest) ([]*Folder, error)
 	UpdateFolder(req *UpdateFolderRequest) error
 }
 
 type FolderRepository interface {
-	GetFolder(key KeySet) *Folder
+	GetFolder(key FolderKeySet) *Folder
 	GetFolders(req *GetFoldersRequest) []*Folder
 	AddFolder(folder *Folder) error
 	UpdateFolder(req *UpdateFolderRequest) error
-	DeleteFolder(key KeySet) error
+	DeleteFolder(key FolderKeySet) error
+}
+
+type FileService interface {
+	AddFile(file *File) error
+	DeleteFile(key FileKeySet) error
+	GetFiles(req *GetFilesRequest) ([]*File, error)
+}
+
+type FileRepository interface {
+	GetFile(key FileKeySet) *File
+	GetFiles(req *GetFilesRequest) []*File
+	AddFile(file *File) error
+	DeleteFile(key FileKeySet) error
 }

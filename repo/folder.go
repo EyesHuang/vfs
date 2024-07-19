@@ -9,16 +9,16 @@ import (
 )
 
 type MemoryFolderRepo struct {
-	Folders map[vfs.KeySet]*vfs.Folder
+	Folders map[vfs.FolderKeySet]*vfs.Folder
 }
 
 func NewMemoFolderRepo() *MemoryFolderRepo {
 	return &MemoryFolderRepo{
-		make(map[vfs.KeySet]*vfs.Folder),
+		make(map[vfs.FolderKeySet]*vfs.Folder),
 	}
 }
 
-func (mfr *MemoryFolderRepo) GetFolder(key vfs.KeySet) *vfs.Folder {
+func (mfr *MemoryFolderRepo) GetFolder(key vfs.FolderKeySet) *vfs.Folder {
 	if folder, exists := mfr.Folders[key]; exists {
 		return folder
 	}
@@ -26,7 +26,7 @@ func (mfr *MemoryFolderRepo) GetFolder(key vfs.KeySet) *vfs.Folder {
 }
 
 func (mfr *MemoryFolderRepo) AddFolder(folder *vfs.Folder) error {
-	key := vfs.KeySet{
+	key := vfs.FolderKeySet{
 		UserName:   folder.UserName,
 		FolderName: folder.Name,
 	}
@@ -39,11 +39,11 @@ func (mfr *MemoryFolderRepo) AddFolder(folder *vfs.Folder) error {
 }
 
 func (mfr *MemoryFolderRepo) UpdateFolder(req *vfs.UpdateFolderRequest) error {
-	oldKey := vfs.KeySet{
+	oldKey := vfs.FolderKeySet{
 		UserName:   req.UserName,
 		FolderName: req.OldName,
 	}
-	newKey := vfs.KeySet{
+	newKey := vfs.FolderKeySet{
 		UserName:   req.UserName,
 		FolderName: req.NewName,
 	}
@@ -67,7 +67,7 @@ func (mfr *MemoryFolderRepo) UpdateFolder(req *vfs.UpdateFolderRequest) error {
 	return nil
 }
 
-func (mfr *MemoryFolderRepo) DeleteFolder(key vfs.KeySet) error {
+func (mfr *MemoryFolderRepo) DeleteFolder(key vfs.FolderKeySet) error {
 	if mfr.GetFolder(key) == nil {
 		errMsg := fmt.Sprintf("The %s doesn't exist.", key.FolderName)
 		return errors.New(errMsg)

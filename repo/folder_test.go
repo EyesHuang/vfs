@@ -19,7 +19,7 @@ func TestAddFolder_Success(t *testing.T) {
 
 	err := repo.AddFolder(folder)
 	assert.Nil(t, err)
-	assert.NotNil(t, repo.GetFolder(vfs.KeySet{UserName: "user1", FolderName: "folder1"}))
+	assert.NotNil(t, repo.GetFolder(vfs.FolderKeySet{UserName: "user1", FolderName: "folder1"}))
 }
 
 func TestAddFolder_ExistingFolder(t *testing.T) {
@@ -45,11 +45,11 @@ func TestGetFolder(t *testing.T) {
 	}
 	_ = repo.AddFolder(folder)
 
-	retrievedFolder := repo.GetFolder(vfs.KeySet{UserName: "user1", FolderName: "folder1"})
+	retrievedFolder := repo.GetFolder(vfs.FolderKeySet{UserName: "user1", FolderName: "folder1"})
 	assert.NotNil(t, retrievedFolder)
 	assert.Equal(t, "folder1", retrievedFolder.Name)
 
-	retrievedFolder = repo.GetFolder(vfs.KeySet{UserName: "user1", FolderName: "nonexistent"})
+	retrievedFolder = repo.GetFolder(vfs.FolderKeySet{UserName: "user1", FolderName: "nonexistent"})
 	assert.Nil(t, retrievedFolder)
 }
 
@@ -70,8 +70,8 @@ func TestUpdateFolder_Success(t *testing.T) {
 
 	err := repo.UpdateFolder(req)
 	assert.Nil(t, err)
-	assert.Nil(t, repo.GetFolder(vfs.KeySet{UserName: "user1", FolderName: "folder1"}))
-	assert.NotNil(t, repo.GetFolder(vfs.KeySet{UserName: "user1", FolderName: "folder2"}))
+	assert.Nil(t, repo.GetFolder(vfs.FolderKeySet{UserName: "user1", FolderName: "folder1"}))
+	assert.NotNil(t, repo.GetFolder(vfs.FolderKeySet{UserName: "user1", FolderName: "folder2"}))
 }
 
 func TestUpdateFolder_OldFolderNotFound(t *testing.T) {
@@ -122,15 +122,15 @@ func TestDeleteFolder_Success(t *testing.T) {
 	}
 	_ = repo.AddFolder(folder)
 
-	err := repo.DeleteFolder(vfs.KeySet{UserName: "user1", FolderName: "folder1"})
+	err := repo.DeleteFolder(vfs.FolderKeySet{UserName: "user1", FolderName: "folder1"})
 	assert.Nil(t, err)
-	assert.Nil(t, repo.GetFolder(vfs.KeySet{UserName: "user1", FolderName: "folder1"}))
+	assert.Nil(t, repo.GetFolder(vfs.FolderKeySet{UserName: "user1", FolderName: "folder1"}))
 }
 
 func TestDeleteFolder_NotFound(t *testing.T) {
 	repo := NewMemoFolderRepo()
 
-	err := repo.DeleteFolder(vfs.KeySet{UserName: "user1", FolderName: "nonexistent"})
+	err := repo.DeleteFolder(vfs.FolderKeySet{UserName: "user1", FolderName: "nonexistent"})
 	assert.NotNil(t, err)
 	assert.Equal(t, "The nonexistent doesn't exist.", err.Error())
 }
