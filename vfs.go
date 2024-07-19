@@ -26,6 +26,9 @@ type File struct {
 	Description string
 	CreatedAt   time.Time
 	FolderID    uuid.UUID
+	FolderName  string
+	UserID      uuid.UUID
+	UserName    string
 }
 
 type FolderKeySet struct {
