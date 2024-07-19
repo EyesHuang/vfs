@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
+	"regexp"
 
 	"vfs"
 )
@@ -23,9 +25,32 @@ func (hm *HandlerManager) HandleRegister(args []string) {
 		fmt.Println("Usage: register [username]")
 		return
 	}
+
+	if err := validateName(args[0]); err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	if err := hm.userService.Register(args[0]); err != nil {
 		fmt.Println(err)
 	} else {
 		fmt.Printf("Add %s successfully.\n", args[0])
 	}
+}
+
+const (
+	MaxNameLength  = 255
+	ValidNameRegex = `^[a-zA-Z0-9_\-]+$`
+)
+
+func validateName(name string) error {
+	if len(name) == 0 || len(name) > MaxNameLength {
+		return errors.New("name length must be between 1 and 255 characters")
+	}
+
+	validName := regexp.MustCompile(ValidNameRegex)
+	if !validName.MatchString(name) {
+		return errors.New("name contains invalid characters")
+	}
+	return nil
 }

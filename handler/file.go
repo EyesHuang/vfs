@@ -17,6 +17,13 @@ func (hm *HandlerManager) HandleCreateFile(args []string) {
 		return
 	}
 
+	for _, name := range args[:3] {
+		if err := validateName(name); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
+
 	file := &vfs.File{
 		Name:       args[2],
 		UserName:   args[0],
@@ -49,6 +56,13 @@ func (hm *HandlerManager) HandleDeleteFile(args []string) {
 		return
 	}
 
+	for _, name := range args[:3] {
+		if err := validateName(name); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
+
 	key := vfs.FileKeySet{
 		UserName:   args[0],
 		FolderName: args[1],
@@ -66,6 +80,13 @@ func (hm *HandlerManager) HandleListFiles(args []string) {
 	if len(args) < 2 || len(args) > 4 {
 		fmt.Println("Usage: list-files [username] [foldername] [--sort-name|--sort-created] [asc|desc]")
 		return
+	}
+
+	for _, name := range args[:2] {
+		if err := validateName(name); err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
 
 	req := &vfs.GetFilesRequest{

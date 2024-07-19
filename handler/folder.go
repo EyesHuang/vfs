@@ -19,6 +19,13 @@ func (hm *HandlerManager) HandleCreateFolder(args []string) {
 		return
 	}
 
+	for _, name := range args[:2] {
+		if err := validateName(name); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
+
 	folder := &vfs.Folder{
 		Name:     args[1],
 		UserName: args[0],
@@ -45,6 +52,13 @@ func (hm *HandlerManager) HandleDeleteFolder(args []string) {
 		return
 	}
 
+	for _, name := range args {
+		if err := validateName(name); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
+
 	key := vfs.FolderKeySet{
 		UserName:   args[0],
 		FolderName: args[1],
@@ -60,6 +74,11 @@ func (hm *HandlerManager) HandleDeleteFolder(args []string) {
 func (hm *HandlerManager) HandleListFolders(args []string) {
 	if len(args) < 1 || len(args) > 3 {
 		fmt.Println("Usage: list-folders [username] [--sort-name|--sort-created] [asc|desc]")
+		return
+	}
+
+	if err := validateName(args[0]); err != nil {
+		fmt.Println(err)
 		return
 	}
 
@@ -106,9 +125,18 @@ func (hm *HandlerManager) HandleRenameFolder(args []string) {
 		return
 	}
 
-	if !isValidFolderFileName(args[1]) || !isValidFolderFileName(args[2]) {
-		fmt.Printf("Folder names contains invalid chars.\n")
-		return
+	for _, name := range args[1:] {
+		if !isValidFolderFileName(name) {
+			fmt.Printf("Folder name %s contains invalid chars.\n", name)
+			return
+		}
+	}
+
+	for _, name := range args {
+		if err := validateName(name); err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
 
 	req := &vfs.UpdateFolderRequest{
