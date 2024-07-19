@@ -9,10 +9,13 @@ import (
 type HandlerManager struct {
 	userService   vfs.UserService
 	folderService vfs.FolderService
+	fileService   vfs.FileService
 }
 
-func NewHandlerManager(us vfs.UserService, fs vfs.FolderService) *HandlerManager {
-	return &HandlerManager{userService: us, folderService: fs}
+func NewHandlerManager(userService vfs.UserService, folderService vfs.FolderService,
+	fileService vfs.FileService,
+) *HandlerManager {
+	return &HandlerManager{userService: userService, folderService: folderService, fileService: fileService}
 }
 
 func (hm *HandlerManager) HandleRegister(args []string) {

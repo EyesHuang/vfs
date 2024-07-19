@@ -15,7 +15,7 @@ func (hm *HandlerManager) HandleCreateFolder(args []string) {
 	}
 
 	if !isValidFolderFileName(args[1]) {
-		fmt.Printf("The %s contain invalid chars.\n", args[1])
+		fmt.Printf("The %s contains invalid chars.\n", args[1])
 		return
 	}
 
@@ -41,11 +41,11 @@ func (hm *HandlerManager) HandleDeleteFolder(args []string) {
 	}
 
 	if !isValidFolderFileName(args[1]) {
-		fmt.Printf("The %s contain invalid chars.\n", args[1])
+		fmt.Printf("The %s contains invalid chars.\n", args[1])
 		return
 	}
 
-	key := vfs.KeySet{
+	key := vfs.FolderKeySet{
 		UserName:   args[0],
 		FolderName: args[1],
 	}
@@ -107,7 +107,7 @@ func (hm *HandlerManager) HandleRenameFolder(args []string) {
 	}
 
 	if !isValidFolderFileName(args[1]) || !isValidFolderFileName(args[2]) {
-		fmt.Printf("Folder names contain invalid chars.\n")
+		fmt.Printf("Folder names contains invalid chars.\n")
 		return
 	}
 
@@ -142,7 +142,7 @@ func parseSortType(sortType string) (vfs.SortType, error) {
 
 	switch sortType {
 	case "--sort-name":
-		sortBy = vfs.FolderName
+		sortBy = vfs.Name
 	case "--sort-created":
 		sortBy = vfs.Created
 	default:

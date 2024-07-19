@@ -14,7 +14,10 @@ func main() {
 	folderRepo := repo.NewMemoFolderRepo()
 	folderService := service.NewFolderManageService(folderRepo, userRepo)
 
-	handler := handler.NewHandlerManager(userService, folderService)
+	fileRepo := repo.NewMemoryFileRepo()
+	fileService := service.NewFileManageService(fileRepo, userRepo, folderRepo)
+
+	handler := handler.NewHandlerManager(userService, folderService, fileService)
 
 	repl.StartREPL(handler)
 }

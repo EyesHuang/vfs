@@ -47,7 +47,7 @@ func TestDeleteFolder_Success(t *testing.T) {
 	mockUserRepo := new(mock.MockUserRepo)
 	service := NewFolderManageService(mockFolderRepo, mockUserRepo)
 
-	key := vfs.KeySet{UserName: "user1", FolderName: "folder1"}
+	key := vfs.FolderKeySet{UserName: "user1", FolderName: "folder1"}
 	user := &vfs.User{ID: uuid.New(), Name: "user1"}
 
 	mockUserRepo.On("GetUser", "user1").Return(user)
@@ -64,7 +64,7 @@ func TestDeleteFolder_UserNotFound(t *testing.T) {
 	mockUserRepo := new(mock.MockUserRepo)
 	service := NewFolderManageService(mockFolderRepo, mockUserRepo)
 
-	key := vfs.KeySet{UserName: "nonexistent", FolderName: "folder1"}
+	key := vfs.FolderKeySet{UserName: "nonexistent", FolderName: "folder1"}
 
 	mockUserRepo.On("GetUser", "nonexistent").Return((*vfs.User)(nil))
 

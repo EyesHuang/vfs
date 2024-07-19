@@ -24,7 +24,7 @@ type MockFolderRepo struct {
 	mock.Mock
 }
 
-func (m *MockFolderRepo) GetFolder(key vfs.KeySet) *vfs.Folder {
+func (m *MockFolderRepo) GetFolder(key vfs.FolderKeySet) *vfs.Folder {
 	args := m.Called(key)
 	return args.Get(0).(*vfs.Folder)
 }
@@ -44,7 +44,31 @@ func (m *MockFolderRepo) UpdateFolder(req *vfs.UpdateFolderRequest) error {
 	return args.Error(0)
 }
 
-func (m *MockFolderRepo) DeleteFolder(key vfs.KeySet) error {
+func (m *MockFolderRepo) DeleteFolder(key vfs.FolderKeySet) error {
+	args := m.Called(key)
+	return args.Error(0)
+}
+
+type MockFileRepo struct {
+	mock.Mock
+}
+
+func (m *MockFileRepo) GetFile(key vfs.FileKeySet) *vfs.File {
+	args := m.Called(key)
+	return args.Get(0).(*vfs.File)
+}
+
+func (m *MockFileRepo) GetFiles(req *vfs.GetFilesRequest) []*vfs.File {
+	args := m.Called(req)
+	return args.Get(0).([]*vfs.File)
+}
+
+func (m *MockFileRepo) AddFile(file *vfs.File) error {
+	args := m.Called(file)
+	return args.Error(0)
+}
+
+func (m *MockFileRepo) DeleteFile(key vfs.FileKeySet) error {
 	args := m.Called(key)
 	return args.Error(0)
 }

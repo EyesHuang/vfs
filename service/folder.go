@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"vfs"
+
+	"github.com/google/uuid"
 )
 
 type FolderManageService struct {
@@ -25,6 +27,7 @@ func (fms *FolderManageService) AddFolder(folder *vfs.Folder) error {
 	}
 
 	folder.UserID = user.ID
+	folder.ID = uuid.New()
 	folder.CreatedAt = time.Now()
 
 	if err := fms.folderRepo.AddFolder(folder); err != nil {
@@ -33,7 +36,7 @@ func (fms *FolderManageService) AddFolder(folder *vfs.Folder) error {
 	return nil
 }
 
-func (fms *FolderManageService) DeleteFolder(key vfs.KeySet) error {
+func (fms *FolderManageService) DeleteFolder(key vfs.FolderKeySet) error {
 	user := fms.userRepo.GetUser(key.UserName)
 	if user == nil {
 		errMsg := fmt.Sprintf("The %s doesn't exist.", key.UserName)
