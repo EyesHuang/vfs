@@ -58,7 +58,7 @@ func (hm *HandlerManager) HandleDeleteFile(args []string) {
 	if err := hm.fileService.DeleteFile(key); err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Printf("Delete %s successfully.\n", args[1])
+		fmt.Printf("Delete %s successfully.\n", args[2])
 	}
 }
 

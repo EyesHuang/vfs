@@ -12,7 +12,7 @@ type MemoryFileRepo struct {
 	Files map[vfs.FileKeySet]*vfs.File
 }
 
-func NewMemoryFileRepo() *MemoryFileRepo {
+func NewMemoFileRepo() *MemoryFileRepo {
 	return &MemoryFileRepo{
 		Files: make(map[vfs.FileKeySet]*vfs.File),
 	}
