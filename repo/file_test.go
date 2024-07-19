@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetFile(t *testing.T) {
-	repo := NewMemoryFileRepo()
+	repo := NewMemoFileRepo()
 
 	file := &vfs.File{
 		UserName:   "user1",
@@ -28,7 +28,7 @@ func TestGetFile(t *testing.T) {
 }
 
 func TestGetFiles(t *testing.T) {
-	repo := NewMemoryFileRepo()
+	repo := NewMemoFileRepo()
 
 	now := time.Now()
 	file1 := &vfs.File{
@@ -73,7 +73,7 @@ func TestGetFiles(t *testing.T) {
 }
 
 func TestAddFile_Success(t *testing.T) {
-	repo := NewMemoryFileRepo()
+	repo := NewMemoFileRepo()
 
 	file := &vfs.File{
 		UserName:   "user1",
@@ -87,7 +87,7 @@ func TestAddFile_Success(t *testing.T) {
 }
 
 func TestAddFile_ExistingFile(t *testing.T) {
-	repo := NewMemoryFileRepo()
+	repo := NewMemoFileRepo()
 
 	file := &vfs.File{
 		UserName:   "user1",
@@ -102,7 +102,7 @@ func TestAddFile_ExistingFile(t *testing.T) {
 }
 
 func TestDeleteFile_Success(t *testing.T) {
-	repo := NewMemoryFileRepo()
+	repo := NewMemoFileRepo()
 
 	file := &vfs.File{
 		UserName:   "user1",
@@ -117,7 +117,7 @@ func TestDeleteFile_Success(t *testing.T) {
 }
 
 func TestDeleteFile_NotFound(t *testing.T) {
-	repo := NewMemoryFileRepo()
+	repo := NewMemoFileRepo()
 
 	err := repo.DeleteFile(vfs.FileKeySet{UserName: "user1", FolderName: "folder1", FileName: "nonexistent"})
 	assert.NotNil(t, err)
