@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
 
@@ -10,12 +11,12 @@ import (
 
 func (hm *HandlerManager) HandleCreateFolder(args []string) {
 	if len(args) < 2 || len(args) > 3 {
-		fmt.Println("Usage: create-folder [username] [foldername] [description]?")
+		_, _ = fmt.Fprintln(os.Stderr, "Usage: create-folder [username] [foldername] [description]?")
 		return
 	}
 
 	if !isValidFolderFileName(args[1]) {
-		fmt.Printf("The %s contains invalid chars.\n", args[1])
+		_, _ = fmt.Fprintf(os.Stderr, "The %s contains invalid chars.\n", args[1])
 		return
 	}
 
@@ -28,20 +29,20 @@ func (hm *HandlerManager) HandleCreateFolder(args []string) {
 	}
 
 	if err := hm.folderService.AddFolder(folder); err != nil {
-		fmt.Println(err)
+		_, _ = fmt.Fprintln(os.Stderr, err)
 	} else {
-		fmt.Printf("Create %s successfully.\n", args[1])
+		_, _ = fmt.Fprintf(os.Stdout, "Create %s successfully.\n", args[1])
 	}
 }
 
 func (hm *HandlerManager) HandleDeleteFolder(args []string) {
 	if len(args) != 2 {
-		fmt.Println("Usage: delete-folder [username] [foldername]")
+		_, _ = fmt.Fprintln(os.Stderr, "Usage: delete-folder [username] [foldername]")
 		return
 	}
 
 	if !isValidFolderFileName(args[1]) {
-		fmt.Printf("The %s contains invalid chars.\n", args[1])
+		_, _ = fmt.Fprintf(os.Stderr, "The %s contains invalid chars.\n", args[1])
 		return
 	}
 
@@ -51,15 +52,15 @@ func (hm *HandlerManager) HandleDeleteFolder(args []string) {
 	}
 
 	if err := hm.folderService.DeleteFolder(key); err != nil {
-		fmt.Println(err)
+		_, _ = fmt.Fprintln(os.Stderr, err)
 	} else {
-		fmt.Printf("Delete %s successfully.\n", args[1])
+		_, _ = fmt.Fprintf(os.Stdout, "Delete %s successfully.\n", args[1])
 	}
 }
 
 func (hm *HandlerManager) HandleListFolders(args []string) {
 	if len(args) < 1 || len(args) > 3 {
-		fmt.Println("Usage: list-folders [username] [--sort-name|--sort-created] [asc|desc]")
+		_, _ = fmt.Fprintln(os.Stderr, "Usage: list-folders [username] [--sort-name|--sort-created] [asc|desc]")
 		return
 	}
 
@@ -70,13 +71,13 @@ func (hm *HandlerManager) HandleListFolders(args []string) {
 	if len(args) == 3 {
 		sortBy, err := parseSortType(args[1])
 		if err != nil {
-			fmt.Println(err)
+			_, _ = fmt.Fprintln(os.Stderr, err)
 			return
 		}
 
 		orderBy, err := parseOrderType(args[2])
 		if err != nil {
-			fmt.Println(err)
+			_, _ = fmt.Fprintln(os.Stderr, err)
 			return
 		}
 
@@ -86,28 +87,28 @@ func (hm *HandlerManager) HandleListFolders(args []string) {
 
 	folders, err := hm.folderService.GetFolders(req)
 	if err != nil {
-		fmt.Println(err)
+		_, _ = fmt.Fprintln(os.Stderr, err)
 		return
 	}
 
 	if len(folders) == 0 {
-		fmt.Printf("Warning: The %s doesn't have any folders.\n", req.UserName)
+		_, _ = fmt.Fprintf(os.Stdout, "Warning: The %s doesn't have any folders.\n", req.UserName)
 		return
 	}
 
 	for _, folder := range folders {
-		fmt.Printf("%s\t%s\t%s\t%s\n", folder.Name, folder.Description, folder.CreatedAt.Format("2006-01-02 15:04:05"), folder.UserName)
+		_, _ = fmt.Fprintf(os.Stdout, "%s\t%s\t%s\t%s\n", folder.Name, folder.Description, folder.CreatedAt.Format("2006-01-02 15:04:05"), folder.UserName)
 	}
 }
 
 func (hm *HandlerManager) HandleRenameFolder(args []string) {
 	if len(args) != 3 {
-		fmt.Println("Usage: rename-folder [username] [foldername] [new-folder-name]")
+		_, _ = fmt.Fprintln(os.Stderr, "Usage: rename-folder [username] [foldername] [new-folder-name]")
 		return
 	}
 
 	if !isValidFolderFileName(args[1]) || !isValidFolderFileName(args[2]) {
-		fmt.Printf("Folder names contains invalid chars.\n")
+		_, _ = fmt.Fprintln(os.Stderr, "Folder names contains invalid chars.")
 		return
 	}
 
@@ -118,9 +119,9 @@ func (hm *HandlerManager) HandleRenameFolder(args []string) {
 	}
 
 	if err := hm.folderService.UpdateFolder(req); err != nil {
-		fmt.Println(err)
+		_, _ = fmt.Fprintln(os.Stderr, err)
 	} else {
-		fmt.Printf("Rename %s to %s successfully.\n", args[1], args[2])
+		_, _ = fmt.Fprintf(os.Stdout, "Rename %s to %s successfully.\n", args[1], args[2])
 	}
 }
 

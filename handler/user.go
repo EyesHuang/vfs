@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"os"
 
 	"vfs"
 )
@@ -20,12 +21,12 @@ func NewHandlerManager(userService vfs.UserService, folderService vfs.FolderServ
 
 func (hm *HandlerManager) HandleRegister(args []string) {
 	if len(args) != 1 {
-		fmt.Println("Usage: register [username]")
+		_, _ = fmt.Fprintln(os.Stderr, "Usage: register [username]")
 		return
 	}
 	if err := hm.userService.Register(args[0]); err != nil {
-		fmt.Println(err)
+		_, _ = fmt.Fprintln(os.Stderr, err)
 	} else {
-		fmt.Printf("Add %s successfully.\n", args[0])
+		_, _ = fmt.Fprintf(os.Stdout, "Add %s successfully.\n", args[0])
 	}
 }
