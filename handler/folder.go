@@ -142,7 +142,7 @@ func parseSortType(sortType string) (vfs.SortType, error) {
 
 	switch sortType {
 	case "--sort-name":
-		sortBy = vfs.FolderName
+		sortBy = vfs.Name
 	case "--sort-created":
 		sortBy = vfs.Created
 	default:

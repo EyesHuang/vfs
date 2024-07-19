@@ -160,7 +160,7 @@ func TestGetFolders_SortyByFolderName(t *testing.T) {
 
 	req := &vfs.GetFoldersRequest{
 		UserName: "user1",
-		SortBy:   vfs.FolderName,
+		SortBy:   vfs.Name,
 		OrderBy:  vfs.Asc,
 	}
 

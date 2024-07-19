@@ -66,10 +66,10 @@ type SortType string
 type OrderType string
 
 const (
-	Asc        OrderType = "asc"
-	Desc       OrderType = "desc"
-	FolderName SortType  = "--sort-name"
-	Created    SortType  = "--sort-created"
+	Asc     OrderType = "asc"
+	Desc    OrderType = "desc"
+	Name    SortType  = "--sort-name"
+	Created SortType  = "--sort-created"
 )
 
 type UserService interface {

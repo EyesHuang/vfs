@@ -86,7 +86,7 @@ func (mfr *MemoryFolderRepo) GetFolders(req *vfs.GetFoldersRequest) []*vfs.Folde
 
 	// Sorting
 	switch req.SortBy {
-	case vfs.FolderName:
+	case vfs.Name:
 		if req.OrderBy == vfs.Asc {
 			sort.Slice(folders, func(i, j int) bool {
 				return folders[i].Name < folders[j].Name

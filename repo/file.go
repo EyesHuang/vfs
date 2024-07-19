@@ -35,7 +35,7 @@ func (mfr *MemoryFileRepo) GetFiles(req *vfs.GetFilesRequest) []*vfs.File {
 
 	// Sorting
 	switch req.SortBy {
-	case vfs.FolderName:
+	case vfs.Name:
 		if req.OrderBy == vfs.Asc {
 			sort.Slice(files, func(i, j int) bool {
 				return files[i].Name < files[j].Name
